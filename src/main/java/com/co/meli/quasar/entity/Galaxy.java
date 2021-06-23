@@ -30,15 +30,10 @@ public class Galaxy {
         double[] positionItem;
         String[] points;
         for (int i = 0; i < satellites.size(); i++) {
-//            positionItem = new double[2];
-//            positionItem[0] = satellites.get(i).getPosition().getX();
-//            positionItem[1] = satellites.get(i).getPosition().getY();
-//            positions[i] = positionItem;
-            points = satellites.get(i).getPosition().toString().split(",");
-            positions[i] = Arrays.stream(points)
-                    .map(Double::valueOf)
-                    .mapToDouble(Double::doubleValue)
-                    .toArray();
+            positionItem = new double[2];
+            positionItem[0] = satellites.get(i).getPosition().getX();
+            positionItem[1] = satellites.get(i).getPosition().getY();
+            positions[i] = positionItem;
         }
         return positions;
     }

@@ -1,24 +1,14 @@
-package com.co.meli.quasar.entity;
+package com.co.meli.quasar.dto;
 
 import java.util.List;
 
-public class Satelite extends Node{
-    private String name;
+public class TopSecretSplitRequest {
     private double distance;
     private List<String> message;
 
-    public Satelite(String name, double distance, List<String> message) {
-        this.name = name;
+    public TopSecretSplitRequest(double distance, List<String> message) {
         this.distance = distance;
         this.message = message;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public double getDistance() {

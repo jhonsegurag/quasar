@@ -24,15 +24,10 @@ public class LocationServiceImpl implements ILocationService{
         double[] positionItem = new double[2];
         for (int i = 0; i < galaxy.getSatellites().size(); i++) {
             location = environment.getProperty("quasar.sattelite."+ i +".position").split(",");
-//            positionItem[0] = Double.valueOf(location[0]);
-//            positionItem[1] = Double.valueOf(location[1]);
-//            positions[i] = positionItem;
-//            positionItem = new double[2];
-
-            positions[i] = Arrays.stream(location)
-                    .map(Double::valueOf)
-                    .mapToDouble(Double::doubleValue)
-                    .toArray();
+            positionItem[0] = Double.valueOf(location[0]);
+            positionItem[1] = Double.valueOf(location[1]);
+            positions[i] = positionItem;
+            positionItem = new double[2];
         }
 
         galaxy.setPositions(positions);
