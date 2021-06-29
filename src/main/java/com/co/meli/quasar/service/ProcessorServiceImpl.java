@@ -1,5 +1,6 @@
 package com.co.meli.quasar.service;
 
+import com.co.meli.quasar.dto.TopSecretRequest;
 import com.co.meli.quasar.dto.TopSecretSplitRequest;
 import com.co.meli.quasar.entity.Galaxy;
 import com.co.meli.quasar.entity.Position;
@@ -27,23 +28,24 @@ public class ProcessorServiceImpl implements IProcessorService {
     @Autowired
     MessageServiceImpl messageService;
 
-    @Override
-    public Space getSpace(RequestEntity<Galaxy> requestEntity) throws LocationException, MessageException {
+    public Space getSpace(RequestEntity<TopSecretRequest> requestEntity) throws LocationException, MessageException {
 
-        Galaxy galaxy = (Galaxy)requestEntity.getBody();
+        TopSecretRequest topSecretRequest = (TopSecretRequest)requestEntity.getBody();
+        Galaxy galaxy = new Galaxy();
+        galaxy.setSatellites(topSecretRequest.getSatellites());
         locationService.initialize(galaxy);
         if (galaxy.getDistances().length < 3) {
-            throw new LocationException("Distances insuficient");
+            throw new LocationException("Insuficient Distances");
         }
         if (galaxy.getPositions().length < 3) {
-            throw new LocationException("Positions insuficient");
+            throw new LocationException("Insuficient Positions");
         }
 
         double[] location = locationService.getLocation(galaxy.getPositions(), galaxy.getDistances());
         Position spacePosition = new Position(location);
 
         if (galaxy.getMessages().size() < 3) {
-            throw new MessageException("Messages insuficient");
+            throw new MessageException("Insuficient Messages");
         }
         String message = messageService.getMessage(galaxy.getMessages());
 
@@ -64,23 +66,23 @@ public class ProcessorServiceImpl implements IProcessorService {
     @Override
     public Space getSpace() throws QuasarException, LocationException, MessageException {
         if(cache.size() != 3) {
-            throw new QuasarException("Satelites insuficient");
+            throw new QuasarException("Insuficient Satelites");
         }
         Galaxy galaxy = new Galaxy();
         galaxy.setSatellites(cache);
         locationService.initialize(galaxy);
         if (galaxy.getDistances().length < 3) {
-            throw new LocationException("Distances insuficient");
+            throw new LocationException("Insuficient Distances");
         }
         if (galaxy.getPositions().length < 3) {
-            throw new LocationException("Positions insuficient");
+            throw new LocationException("Insuficient Positions");
         }
 
         double[] location = locationService.getLocation(galaxy.getPositions(), galaxy.getDistances());
         Position spacePosition = new Position(location);
 
         if (galaxy.getMessages().size() < 3) {
-            throw new MessageException("Messages insuficient");
+            throw new MessageException("Insuficient Messages");
         }
         String message = messageService.getMessage(galaxy.getMessages());
 

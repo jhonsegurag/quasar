@@ -1,17 +1,21 @@
 package com.co.meli.quasar.service;
 
 import com.co.meli.quasar.entity.WordNode;
+import com.co.meli.quasar.exception.MessageException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MessageServiceImpl implements IMessageService{
     @Override
-    public String getMessage(List<List<String>> messages) {
-        List<WordNode> wordNodes = transformWorkNodes(messages);
+    public String getMessage(List<List<String>> messages) throws MessageException {
+        List<List<String>> messagesWithOutGap = removeGapMessage(messages, calculateSizeMessage(messages));
+        List<WordNode> wordNodes = transformWorkNodes(messagesWithOutGap);
         String message = proccesWordNodes(wordNodes);
         return message;
     }
@@ -28,12 +32,35 @@ public class MessageServiceImpl implements IMessageService{
         return wordNodes;
     }
 
-    public String proccesWordNodes(List<WordNode> wordNodes) {
+    public List<List<String>> removeGapMessage(List<List<String>> messages, int sizeMessage){
+        int subListIndex = 0;
+        for(int i = 0; i < messages.size(); i++){
+            subListIndex = messages.get(i).size();
+            messages.set(i, messages.get(i).subList(subListIndex-sizeMessage, subListIndex));
+        }
+        return messages;
+    }
+
+    public int calculateSizeMessage(List<List<String>> messages) {
+        List<String> listWords = new ArrayList<String>();
+        for( List<String> msg : messages){
+            listWords = Stream.concat(listWords.stream(), msg.stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+        listWords.remove("");
+        return listWords.size();
+    }
+
+    public String proccesWordNodes(List<WordNode> wordNodes) throws MessageException {
         List<WordNode> messageWordNodes = new ArrayList<>();
         for (int i = 0; i < wordNodes.size(); i++) {
             WordNode wordNodePivot = wordNodes.get(i);
             List <WordNode> group =  groupWorkNodes(wordNodePivot, wordNodes);
             WordNode wordNodeValidate = validateWorkNode(wordNodePivot, group);
+            if (wordNodeValidate == null){
+                throw new MessageException("Message not descipher");
+            }
             if(isExistWordNode(wordNodeValidate, messageWordNodes) == null){
                 messageWordNodes.add(wordNodeValidate);
             }
@@ -55,8 +82,6 @@ public class MessageServiceImpl implements IMessageService{
     public WordNode validateWorkNode(WordNode wordNodePivot, List<WordNode> wordNodes){
         boolean isValid = false;
         for (int i = 0; i < wordNodes.size(); i++) {
-
-
                 if (!wordNodes.get(i).getWord().equalsIgnoreCase(wordNodePivot.getWord()) &&
                         !wordNodes.get(i).getWord().isEmpty() &&
                         !wordNodePivot.getWord().isEmpty()){
@@ -84,23 +109,7 @@ public class MessageServiceImpl implements IMessageService{
         for (int i = 0; i < wordNodes.size(); i++) {
             message += wordNodes.get(i).getWord() + " ";
         }
-        return message;
-    }
-    public boolean validateGap(List<List<String>> messages) {
-        int coincidences = 1;
-        int standard = 0;
-        int iterator = 0;
-        for (List<String> messageItem:messages) {
-            if (standard == 0){
-                standard = messageItem.size();
-                continue;
-            }
-            iterator = messageItem.size();
-            if (standard == iterator) {
-                coincidences++;
-            }
-        }
-        return coincidences == messages.size() ? true : false;
+        return message.substring(0, message.length()-1);
     }
 
 }
