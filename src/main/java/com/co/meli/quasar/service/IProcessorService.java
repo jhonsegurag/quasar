@@ -1,5 +1,6 @@
 package com.co.meli.quasar.service;
 
+import com.co.meli.quasar.dto.TopSecretRequest;
 import com.co.meli.quasar.dto.TopSecretSplitRequest;
 import com.co.meli.quasar.entity.Galaxy;
 import com.co.meli.quasar.entity.Satelite;
@@ -12,7 +13,7 @@ import org.springframework.http.RequestEntity;
 
 public interface IProcessorService {
 
-    public Space getSpace(RequestEntity<Galaxy> requestEntity) throws LocationException, MessageException;
+    public Space getSpace(RequestEntity<TopSecretRequest> requestEntity) throws LocationException, MessageException;
 
     public Satelite addSatelite(String name, RequestEntity<TopSecretSplitRequest> requestEntity) throws SateliteException;
 

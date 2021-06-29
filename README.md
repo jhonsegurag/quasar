@@ -66,7 +66,7 @@ A continuación una descripcion sobre esquema que se aplica para la validación 
 
 Api donde se expone los recuersos  
 `hostname LOCAL`: `http://localhost:5000/`
-`hostname CLOUD`: ``
+`hostname CLOUD`: `http://meliquasarchallenge-env.eba-dkhke3zu.us-east-1.elasticbeanstalk.com/`
 
 `path`: `/topsecret`
 **Method**
